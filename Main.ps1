@@ -58,7 +58,7 @@ $Alerts = Invoke-Plugins -Folder "$PSScriptRoot\Sources" -Parameters @{ Config =
 # 3. No Further Processing required if no Alerts were sources
 # ---------------------------------------------------------------------------
 if($null -eq $Alerts){
-    Write-DatabaseLog -Database $Database -Level "Info" -Source "Main" -Message "Cycle completed: No new alerts discovered"
+    Write-DatabaseLog -Database $Database -Level "Information" -Source "Main" -Message "Cycle completed: No new alerts discovered"
     return
 }
 
@@ -72,4 +72,4 @@ Update-DatabaseWithAlerts -Database $Database -Alerts $Alerts
 # ---------------------------------------------------------------------------
 Invoke-Plugins -Folder "$PSScriptRoot\Outputs" -Parameters @{ Alerts = $Alerts; Config = $config } -Database $Database | Out-Null
 
-Write-DatabaseLog -Database $Database -Level "Info" -Source "Main" -Message "Cycle completed: Alerts stored, dispatched to outputs"
+Write-DatabaseLog -Database $Database -Level "Information" -Source "Main" -Message "Cycle completed: Alerts stored, dispatched to outputs"
