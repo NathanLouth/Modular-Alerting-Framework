@@ -44,7 +44,7 @@ $Alerts.Add(
         -Severity 3 `
         -CorrelationKey "SERVER03-C" `
         -ConfigItem "SERVER03" `
-        -Timestamp "2026-07-14 09:00")
+        -Timestamp "2026-07-14 09:00Z")
 )
 
 $Alerts.Add(
@@ -56,7 +56,7 @@ $Alerts.Add(
         -CorrelationKey "SERVER03-C" `
         -ConfigItem "SERVER03" `
         -Status "Resolved" `
-        -Timestamp "2026-07-14 10:00")
+        -Timestamp "2026-07-14 10:00Z")
 )
 
 $Alerts.Add(
@@ -68,7 +68,7 @@ $Alerts.Add(
         -CorrelationKey "SERVER03-P" `
         -ConfigItem "SERVER03" `
         -Status "Resolved" `
-        -Timestamp "2026-07-14 10:00")
+        -Timestamp "2026-07-14 10:00Z")
 )
 
 return ,$Alerts
