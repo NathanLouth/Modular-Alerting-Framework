@@ -165,18 +165,28 @@ PRAGMA journal_mode=WAL;
 
     [int] PruneLogs([int]$OlderThanDays) {
         $cutoff = (Get-Date).ToUniversalTime().AddDays(-$OlderThanDays).ToString("o")
-        $sql = "DELETE FROM logs WHERE Timestamp < @Cutoff"
-        Invoke-SqliteQuery -DataSource $this.DbPath -Query $sql -SqlParameters @{ Cutoff = $cutoff }
-        $count = Invoke-SqliteQuery -DataSource $this.DbPath -Query "SELECT changes() AS Count"
-        return $count.Count
+        $conn = New-SQLiteConnection -DataSource $this.DbPath
+        try {
+            Invoke-SqliteQuery -SQLiteConnection $conn -Query "DELETE FROM logs WHERE Timestamp < @Cutoff" -SqlParameters @{ Cutoff = $cutoff }
+            $count = Invoke-SqliteQuery -SQLiteConnection $conn -Query "SELECT changes() AS Count"
+            return $count.Count
+        }
+        finally {
+            $conn.Close()
+        }
     }
 
     [int] PruneAlerts([int]$OlderThanDays) {
         $cutoff = (Get-Date).ToUniversalTime().AddDays(-$OlderThanDays).ToString("o")
-        $sql = "DELETE FROM alerts WHERE Timestamp < @Cutoff"
-        Invoke-SqliteQuery -DataSource $this.DbPath -Query $sql -SqlParameters @{ Cutoff = $cutoff }
-        $count = Invoke-SqliteQuery -DataSource $this.DbPath -Query "SELECT changes() AS Count"
-        return $count.Count
+        $conn = New-SQLiteConnection -DataSource $this.DbPath
+        try {
+            Invoke-SqliteQuery -SQLiteConnection $conn -Query "DELETE FROM alerts WHERE Timestamp < @Cutoff" -SqlParameters @{ Cutoff = $cutoff }
+            $count = Invoke-SqliteQuery -SQLiteConnection $conn -Query "SELECT changes() AS Count"
+            return $count.Count
+        }
+        finally {
+            $conn.Close()
+        }
     }
 
     [void] CompactDatabase() {
