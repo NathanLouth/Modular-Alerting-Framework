@@ -14,7 +14,7 @@ function Write-DatabaseLog {
         [Parameter(Mandatory)]
         [Database]$Database,
 
-        [string]$Level = "Info",
+        [string]$Level = "Information",
 
         [Parameter(Mandatory)]
         [string]$Source,
