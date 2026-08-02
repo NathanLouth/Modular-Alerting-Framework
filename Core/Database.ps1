@@ -102,7 +102,7 @@ PRAGMA journal_mode=WAL;
 
         if (-not $matched) {
             $this.WriteLog("Warning", "Database", "Resolve received with no matching open alert. CorrelationKey=$($Alert.CorrelationKey). Inserting orphan row.")
-            $this.AddAlert($Alert, 'UNKNOWN', $true, $timestamp)
+            $this.AddAlert($Alert, $null, $true, $timestamp)
         }
     }
 
