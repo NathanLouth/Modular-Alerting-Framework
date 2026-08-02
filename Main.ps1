@@ -52,12 +52,12 @@ Invoke-Housekeeping -Database $Database -Config $config
 # ---------------------------------------------------------------------------
 # 2. Sources — collect new alerts from every source, combined into one batch
 # ---------------------------------------------------------------------------
-$Alerts = Invoke-Plugins -Folder "$PSScriptRoot\Sources" -Parameters @{ Config = $config } -Accumulate -Database $Database | Sort-Object Timestamp
+$Alerts = @(Invoke-Plugins -Folder "$PSScriptRoot\Sources" -Parameters @{ Config = $config } -Accumulate -Database $Database | Sort-Object Timestamp)
 
 # ---------------------------------------------------------------------------
-# 3. No Further Processing required if no Alerts were sources
+# 3. No Further Processing required if no Alerts were sourced
 # ---------------------------------------------------------------------------
-if($null -eq $Alerts){
+if ($Alerts.Count -eq 0) {
     Write-DatabaseLog -Database $Database -Level "Information" -Source "Main" -Message "Cycle completed: No new alerts discovered"
     return
 }
