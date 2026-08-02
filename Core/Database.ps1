@@ -180,7 +180,9 @@ PRAGMA journal_mode=WAL;
         $cutoff = (Get-Date).ToUniversalTime().AddDays(-$OlderThanDays).ToString("o")
         $conn = New-SQLiteConnection -DataSource $this.DbPath
         try {
-            Invoke-SqliteQuery -SQLiteConnection $conn -Query "DELETE FROM alerts WHERE Timestamp < @Cutoff" -SqlParameters @{ Cutoff = $cutoff }
+            Invoke-SqliteQuery -SQLiteConnection $conn `
+                -Query "DELETE FROM alerts WHERE Timestamp < @Cutoff OR ResolvedTime < @Cutoff" `
+                -SqlParameters @{ Cutoff = $cutoff }
             $count = Invoke-SqliteQuery -SQLiteConnection $conn -Query "SELECT changes() AS Count"
             return $count.Count
         }
