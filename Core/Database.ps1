@@ -90,17 +90,23 @@ PRAGMA journal_mode=WAL;
 
     [void] ResolveAlert([Alert]$Alert) {
         $timestamp = $Alert.Timestamp.ToUniversalTime().ToString("o")
-
-        $sql = "UPDATE alerts SET Resolved = 1, ResolvedTime = @Timestamp WHERE Id = (SELECT Id FROM alerts WHERE CorrelationKey = @CorrelationKey AND Timestamp < @Timestamp AND Resolved = 0 ORDER BY Timestamp ASC LIMIT 1); SELECT changes() AS Count;"
+    
+        $findSql = "SELECT Id FROM alerts WHERE CorrelationKey = @CorrelationKey AND Timestamp <= @Timestamp AND Resolved = 0 ORDER BY Timestamp ASC LIMIT 1"
         $params = @{
             CorrelationKey = $Alert.CorrelationKey
             Timestamp      = $timestamp
         }
-
-        $result  = Invoke-SqliteQuery -DataSource $this.DbPath -Query $sql -SqlParameters $params
-        $matched = $result.Count -gt 0
-
-        if (-not $matched) {
+    
+        $match = Invoke-SqliteQuery -DataSource $this.DbPath -Query $findSql -SqlParameters $params
+    
+        if ($match) {
+            $updateSql = "UPDATE alerts SET Resolved = 1, ResolvedTime = @Timestamp WHERE Id = @Id"
+            Invoke-SqliteQuery -DataSource $this.DbPath -Query $updateSql -SqlParameters @{
+                Id        = $match.Id
+                Timestamp = $timestamp
+            }
+        }
+        else {
             $this.WriteLog("Warning", "Database", "Resolve received with no matching open alert. CorrelationKey=$($Alert.CorrelationKey). Inserting orphan row.")
             $this.AddAlert($Alert, $null, $true, $timestamp)
         }
