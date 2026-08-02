@@ -47,7 +47,9 @@ function Invoke-Housekeeping {
     }
 
     try {
-        Remove-DatabaseLogs -Database $Database -OlderThanDays $Config.LogRetentionDays
+        $removedLogs = Remove-DatabaseLogs -Database $Database -OlderThanDays $Config.LogRetentionDays
+        Write-DatabaseLog -Database $Database -Level "Information" -Source "Housekeeping" `
+            -Message "Removed $removedLogs old log row(s) (retention: $($Config.LogRetentionDays) days)."
     }
     catch {
         Write-DatabaseLog -Database $Database -Level "Error" -Source "Housekeeping" `
@@ -55,7 +57,9 @@ function Invoke-Housekeeping {
     }
 
     try {
-        Remove-DatabaseAlerts -Database $Database -OlderThanDays $Config.AlertRetentionDays
+        $removedAlerts = Remove-DatabaseAlerts -Database $Database -OlderThanDays $Config.AlertRetentionDays
+        Write-DatabaseLog -Database $Database -Level "Information" -Source "Housekeeping" `
+            -Message "Removed $removedAlerts old alert row(s) (retention: $($Config.AlertRetentionDays) days)."
     }
     catch {
         Write-DatabaseLog -Database $Database -Level "Error" -Source "Housekeeping" `
