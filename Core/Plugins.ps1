@@ -94,11 +94,13 @@ function Invoke-Plugins {
                 }
             }
 
+            $outputArray = if ($null -eq $output) { @() } else { @($output) }
+            
             # Only keep genuine Alert instances — drop stray strings/bools/PSCustomObjects/etc.
             # that a plugin might accidentally leave on the success stream.
-            $filteredOutput = @($output | Where-Object { $_ -is [Alert] })
-
-            $droppedCount = @($output).Count - $filteredOutput.Count
+            $filteredOutput = @($outputArray | Where-Object { $_ -is [Alert] })
+            
+            $droppedCount = $outputArray.Count - $filteredOutput.Count
             if ($droppedCount -gt 0 -and $Database) {
                 Write-DatabaseLog -Database $Database -Level "Warning" -Source $file.BaseName `
                     -Message "Emitted $droppedCount non-Alert object(s) on the output stream; discarded."
