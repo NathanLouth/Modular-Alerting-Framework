@@ -118,7 +118,7 @@ PRAGMA journal_mode=WAL;
     }
 
     [object[]] GetAlerts() {
-        $sql = "SELECT * FROM alerts ORDER BY Timestamp DESC"
+        $sql = "SELECT * FROM alerts ORDER BY COALESCE(Timestamp, ResolvedTime) DESC"
         return Invoke-SqliteQuery -DataSource $this.DbPath -Query $sql
     }
 
