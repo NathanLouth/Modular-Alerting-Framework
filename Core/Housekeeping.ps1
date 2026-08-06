@@ -42,7 +42,7 @@ function Invoke-Housekeeping {
 
     if (-not $shouldRun) {
         Write-DatabaseLog -Database $Database -Level "Information" -Source "Housekeeping" `
-            -Message "Skipped — last run was $([math]::Round($daysSinceLastRun, 1)) day(s) ago (interval: $($Config.HousekeepingIntervals) days)."
+            -Message "Skipped - last run was $([math]::Round($daysSinceLastRun, 1)) day(s) ago (interval: $($Config.HousekeepingIntervals) days)."
         return
     }
 
