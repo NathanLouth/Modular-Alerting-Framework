@@ -125,7 +125,7 @@ PRAGMA journal_mode=WAL;
     # ---- App Registry ----
 
     [void] SetSetting([string]$Key, [string]$Value) {
-        $sql = "INSERT INTO settings (Key, Value, UpdatedAt) VALUES (@Key, @Value, @UpdatedAt) ON CONFLICT(Key) DO UPDATE SET Value = excluded.Value, UpdatedAt = excluded.UpdatedAt;"
+        $sql = "INSERT OR REPLACE INTO settings (Key, Value, UpdatedAt) VALUES (@Key, @Value, @UpdatedAt);"
         $params = @{
             Key       = $Key
             Value     = $Value
