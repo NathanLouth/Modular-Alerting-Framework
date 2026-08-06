@@ -52,7 +52,7 @@ Invoke-Housekeeping -Database $Database -Config $config
 # ---------------------------------------------------------------------------
 # 2. Sources — collect new alerts from every source, combined into one batch
 # ---------------------------------------------------------------------------
-$Alerts = @(Invoke-Plugins -Folder "$PSScriptRoot\Sources" -Parameters @{ Config = $config } -Accumulate -Database $Database | Sort-Object Timestamp)
+$Alerts = Invoke-Plugins -Folder "$PSScriptRoot\Sources" -Parameters @{ Config = $config } -Accumulate -Database $Database | Sort-Object Timestamp
 
 # ---------------------------------------------------------------------------
 # 3. No Further Processing required if no Alerts were sourced
